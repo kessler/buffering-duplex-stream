@@ -1,0 +1,33 @@
+{
+  "name": "@kessler/buffering-duplex-stream",
+  "version": "0.0.1",
+  "description": "a duplex stream that serves as a dam or a buffer, holding written data until a certain threshold is met then releasing it to the read side ",
+  "main": "index.js",
+  "scripts": {
+    "test": "env DEBUG=buffering-duplex-stream npx ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kessler/buffering-duplex-stream.git"
+  },
+  "keywords": [
+    "stream",
+    "streams",
+    "buffer",
+    "duplex",
+    "flow",
+    "control"
+  ],
+  "author": "Yaniv Kessler",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/kessler/buffering-duplex-stream/issues"
+  },
+  "homepage": "https://github.com/kessler/buffering-duplex-stream#readme",
+  "dependencies": {
+    "debug": "^4.1.1"
+  },
+  "devDependencies": {
+    "ava": "^3.12.1"
+  }
+}
