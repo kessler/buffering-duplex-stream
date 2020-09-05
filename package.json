@@ -1,7 +1,7 @@
 {
   "name": "@kessler/buffering-duplex-stream",
   "version": "0.0.1",
-  "description": "a duplex stream that serves as a dam or a buffer, holding written data until a certain threshold is met then releasing it to the read side ",
+  "description": "a duplex stream that serves as a dam or a buffer, holding written data until a certain threshold is met then releasing it to the read side",
   "main": "index.js",
   "scripts": {
     "test": "env DEBUG=buffering-duplex-stream npx ava"

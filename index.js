@@ -5,6 +5,7 @@ const BUFFERING = 'buffering'
 const WAITING_FOR_FLUSH = 'waiting for flush'
 const DONE = 'done'
 const ERROR = 'error'
+const TARGET_BACKPRESSURE = 'target overloaded'
 
 class BufferingDuplexStream extends Duplex {
 
@@ -44,13 +45,18 @@ class BufferingDuplexStream extends Duplex {
 		}
 
 		debug('_read size=', size, 'bufferPosition=', this._bufferPosition)
-		this.push(this._buffer.slice(0, this._bufferPosition))
-		
+
+		// do I need to consider backpressure here ??
+		// still can't make this happen in a testing scenario...
+		const shouldContinue = this.push(this._buffer.slice(0, this._bufferPosition))
+		debug('_read shouldContinue=', shouldContinue)
+
 		if (this._state === DONE) {
 			this.push(null)
 		} else {
 			this._initBuffer()
 		}
+
 	}
 
 	async _writeImpl({ chunk, encoding }) {

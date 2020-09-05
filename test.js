@@ -33,7 +33,7 @@ test('BufferingDuplexStream will write chunk the size of the flushThreshold, the
 	t.is(outputData[5].size, 9)
 })
 
-test.only('BufferingDuplexStream will emit an error if a single chunk is bigger than the flush threshold', async t => {
+test('BufferingDuplexStream will emit an error if a single chunk is bigger than the flush threshold', async t => {
 	const bfStream = BufferingDuplexStream.create({
 		flushThreshold: 1
 	})
@@ -46,6 +46,18 @@ test.only('BufferingDuplexStream will emit an error if a single chunk is bigger 
 	}, { instanceOf: Error, message: 'chunk too big, since we dont cut chunks you will need to increase flush threshold' })
 })
 
+test.skip('BufferingDuplexStream pipe to a stream with a very small buffer', async t => {
+	const bfStream = BufferingDuplexStream.create({
+		flushThreshold: 100
+	})
+
+	const source = Readable.from(generate())
+	const target = new SlowTarget()
+	
+	await pipeline(source, bfStream, target)
+
+})
+
 async function* generate() {
 	for (let i = 0; i < 205; i++) {
 		yield i.toString()
@@ -53,10 +65,9 @@ async function* generate() {
 }
 
 class Target extends Writable {
-	constructor(opts) {
-		super(opts)
+	constructor() {
+		super()
 		this.data = []
-		this.chunkSizes = []
 	}
 
 	_write(chunk, enc, callback) {
@@ -70,6 +81,19 @@ class Target extends Writable {
 	}
 }
 
-function wait(ms) {
-	return new Promise(res => setTimeout(res, ms))
+class SlowTarget extends Writable {
+	constructor() {
+		super({ highWaterMark: 1 })
+		this.data = []
+	}
+
+	_write(chunk, enc, callback) {
+
+		this.data.push({
+			chunk,
+			size: Buffer.byteLength(chunk)
+		})
+
+		setTimeout(callback, 10000)
+	}
 }
