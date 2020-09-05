@@ -13,7 +13,7 @@ npm i @kessler/buffering-duplex-stream
 ```js
 const BufferingDuplexStream = require('./index.js')
 const { promisify } = require('util')
-const { Readable, Writable, pipeline: callbackPipeline } = require('stream')
+const { Readable, pipeline: callbackPipeline } = require('stream')
 const pipeline = promisify(callbackPipeline)
 
 /**
@@ -36,14 +36,11 @@ async function main() {
 
     const source = Readable.from(generateData())
 
-    const target = new Writable({
-        write(chunk, encoding, callback) {
-            console.log(`"${chunk.toString()}" = ${Buffer.byteLength(chunk)} bytes`)
-            callback()
-        }
-    })
+    pipeline(source, bfStream)
 
-    await pipeline(source, bfStream, target)
+    for await (const chunk of bfStream) {
+        console.log(`"${chunk.toString()}" = ${Buffer.byteLength(chunk)} bytes`)
+    }
 }
 
 main()
